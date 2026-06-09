@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>防災・天気総合表示</title>
+
+  <link rel="preconnect" href="https://unpkg.com" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="preconnect" href="https://www.jma.go.jp" />
+  <link rel="preconnect" href="https://api.open-meteo.com" />
+  <link rel="preconnect" href="https://api.wolfx.jp" />
+  <link rel="preconnect" href="https://api.p2pquake.net" />
+  <link rel="preconnect" href="https://tilecache.rainviewer.com" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="chrome-layer">
+      <div class="clock-box">
+        <div id="dateLine"></div>
+        <div id="timeLine"></div>
+      </div>
+      <div id="bulletinBox" class="bulletin-box">読込中…</div>
+    </header>
+
+    <main id="sceneHost">
+      <section class="scene active" data-scene="forecast">
+        <div class="scene-title">全国の天気</div>
+        <div id="forecastMap" class="map"></div>
+      </section>
+
+      <section class="scene" data-scene="landslide">
+        <div class="scene-title">土砂災害警戒</div>
+        <div id="landslideMap" class="map"></div>
+        <div id="landslideEmpty" class="center-message hidden">現在警戒情報などは発表されていません</div>
+      </section>
+
+      <section class="scene" data-scene="radar">
+        <div class="scene-title">現在の雨雲レーダー</div>
+        <div id="radarMap" class="map"></div>
+      </section>
+
+      <section class="scene" data-scene="precip">
+        <div class="scene-title">1時間降水量ランキング</div>
+        <div class="dual-layout">
+          <aside class="side-panel rank-panel">
+            <h2>1時間降水量</h2>
+            <div id="precipUpdatedAt" class="subhead">--</div>
+            <div id="precipRankingList" class="rank-list"></div>
+          </aside>
+          <div id="precipMap" class="map"></div>
+        </div>
+      </section>
+
+      <section class="scene" data-scene="typhoon">
+        <div class="scene-title">台風情報</div>
+        <div class="dual-layout">
+          <aside class="side-panel info-panel">
+            <h2>台風情報</h2>
+            <dl id="typhoonInfoList" class="info-list"></dl>
+          </aside>
+          <div id="typhoonMap" class="map"></div>
+        </div>
+      </section>
+
+      <section class="scene" data-scene="tsunami">
+        <div class="scene-title">津波情報</div>
+        <div class="dual-layout">
+          <aside class="side-panel info-panel">
+            <h2>津波情報</h2>
+            <dl id="tsunamiQuakeInfo" class="info-list"></dl>
+            <div id="tsunamiAreas" class="tsunami-areas"></div>
+          </aside>
+          <div id="tsunamiMap" class="map"></div>
+        </div>
+      </section>
+
+      <section class="scene emergency" data-scene="quake">
+        <div class="scene-title warning-title">地震情報</div>
+        <div class="dual-layout">
+          <div id="quakeMap" class="map"></div>
+          <aside class="side-panel quake-panel">
+            <h2>地震情報</h2>
+            <dl class="info-list">
+              <div><dt>最大震度</dt><dd id="quakeMaxScale">-</dd></div>
+              <div><dt>震源地</dt><dd id="quakeHypo">-</dd></div>
+              <div><dt>マグニチュード</dt><dd id="quakeMag">-</dd></div>
+              <div><dt>深さ</dt><dd id="quakeDepth">-</dd></div>
+              <div><dt>発生時刻</dt><dd id="quakeTime">-</dd></div>
+            </dl>
+            <div id="quakeObservedList" class="observed-list"></div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <div id="eewOverlay" class="eew-overlay hidden">
+      <div class="eew-card">
+        <div class="eew-head">緊急地震速報</div>
+        <div id="eewSerial" class="eew-serial">第1報</div>
+        <div class="eew-grid">
+          <div><span>最大震度</span><strong id="eewMaxScale">-</strong></div>
+          <div><span>震源地</span><strong id="eewHypo">-</strong></div>
+          <div><span>マグニチュード</span><strong id="eewMag">-</strong></div>
+          <div><span>深さ</span><strong id="eewDepth">-</strong></div>
+          <div><span>発生時刻</span><strong id="eewOrigin">-</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="chrome-layer footer-layer">
+      <div class="ticker-shell">
+        <div class="ticker-label">全国天気・雨量</div>
+        <div class="ticker-track-wrap">
+          <div id="tickerTrack" class="ticker-track">読込中…</div>
+        </div>
+      </div>
+      <div class="credit-line">
+        Weather: Open-Meteo / Warnings・Typhoon・AMeDAS: 気象庁 / EEW: Wolfx / Quake・Tsunami: P2P地震情報 / Radar: RainViewer / Kyoshin: 防災科研
+      </div>
+    </footer>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="./app.js"></script>
+</body>
+</html>
